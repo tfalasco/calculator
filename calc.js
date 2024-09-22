@@ -26,6 +26,32 @@ function divide(a, b) {
     return a / b;
 }
 
+function operate(op1, op2, operator) {
+    let func;
+    switch (operator) {
+        case '+':
+            func = add;
+            break;
+        case '-':
+            func = subtract;
+            break;
+        case '*':
+            func = multiply;
+            break;
+        case '/':
+            func = divide;
+            break;
+        default:
+            func = undefined;
+    }
+
+    if (undefined === func) {
+        return ERR;
+    }
+    else {
+        return func(op1, op2);
+    }
+}
 /*****************************************************************************/
 
 /******************************************************************************
@@ -35,7 +61,8 @@ module.exports = {
     add,
     subtract,
     multiply,
-    divide
+    divide,
+    operate,
   };
   /*****************************************************************************/
   

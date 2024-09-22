@@ -57,3 +57,9 @@ describe('devide function', () => {
     expect(calc.divide(5, 0)).toBe("Err");
   })
 });
+
+describe('operate function', () => {
+  test('operate calls add', () => {
+    expect(calc.operate(3, 4, '+')).toBe(7);
+  });
+});
