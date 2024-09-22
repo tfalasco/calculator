@@ -62,4 +62,20 @@ describe('operate function', () => {
   test('operate calls add', () => {
     expect(calc.operate(3, 4, '+')).toBe(7);
   });
+
+  test('operate calls subtract', () => {
+    expect(calc.operate(9, 6, '-')).toBe(3);
+  });
+
+  test('operate calls multiply', () => {
+    expect(calc.operate(4, 5, '*')).toBe(20);
+  });
+
+  test('operate calls divide', () => {
+    expect(calc.operate(10, 2, '/')).toBe(5);
+  })
+
+  test('operate returns "Err" with invalid operator', () => {
+    expect(calc.operate(2, 3, '%')).toBe("Err");
+  })
 });
