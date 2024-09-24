@@ -1,0 +1,57 @@
+@font-face {
+    font-family: 'calculator-font';
+    src: url(fonts/digital-7.mono.ttf);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+#frame {
+    display: flex;
+    flex-direction: column;
+    border: solid black 3px;
+    border-radius: 5px;
+    height: 295px;
+    width: 205px;
+    padding: 0;
+    justify-content: space-evenly;
+    background-color: lightgray;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    width: 200px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#display {
+    height: 40px;
+    width: 184px;
+    border: solid black 2px;
+    border-radius: 5px;
+    padding: 4px;
+    text-align:right;
+    font-family: 'calculator-font';
+    font-size:38px;
+    background-color: rgb(120, 162, 120);
+}
+
+.button {
+    height: 40px;
+    width: 40px;
+    border: solid black 2px;
+    border-radius: 5px;
+    font-size: large;
+}
+
+.number {
+    background-color: cadetblue;
+    font-size: x-large;
+}
+
+.operation {
+    background-color: coral;
+}
