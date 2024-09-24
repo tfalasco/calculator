@@ -5,6 +5,17 @@ const ERR = "Err";
 /*****************************************************************************/
 
 /******************************************************************************
+ * Enums
+ *****************************************************************************/
+const Operations = Object.freeze({
+    '+': add,
+    '-': subtract,
+    '*': multiply,
+    '/': divide,
+});
+/*****************************************************************************/
+
+/******************************************************************************
  * Functions
  *****************************************************************************/
 function add(a, b) {
@@ -27,30 +38,14 @@ function divide(a, b) {
 }
 
 function operate(op1, op2, operator) {
-    let func;
-    switch (operator) {
-        case '+':
-            func = add;
-            break;
-        case '-':
-            func = subtract;
-            break;
-        case '*':
-            func = multiply;
-            break;
-        case '/':
-            func = divide;
-            break;
-        default:
-            func = undefined;
-    }
 
-    if (undefined === func) {
-        return ERR;
+    if (Operations[operator]) {
+        return Operations[operator](op1, op2);
     }
     else {
-        return func(op1, op2);
+        return ERR;
     }
+
 }
 /*****************************************************************************/
 
