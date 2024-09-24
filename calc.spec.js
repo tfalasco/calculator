@@ -9,10 +9,8 @@ describe('add function', () => {
     expect(calc.add(-3, 2)).toBe(-1);
   });
 
-  // Floats are not yet supported because we need to use an epsilon function to 
-  // limit precision.
-  test.skip ('adds floats', () => {
-    expect(calc.add(1.6, 0.3)).toBe(1.9);
+  test ('adds floats', () => {
+    expect(calc.add(1.6, 0.3)).toBeCloseTo(1.9);
   });
 });
 
@@ -32,6 +30,10 @@ describe('subtract function', () => {
   test ('subtracts a negative from a positive', () => {
     expect(calc.subtract(5, -2)).toBe(7);
   });
+
+  test('subtracts floats', () => {
+    expect(calc.subtract(1.3, 2.5)).toBeCloseTo(-1.2);
+  });
 });
 
 describe('multiply function', () => {
@@ -42,9 +44,13 @@ describe('multiply function', () => {
   test('multiplies positive and negative integers', () => {
     expect(calc.multiply(3, -2)).toBe(-6);
   });
+
+  test('multiplies floats', () => {
+    expect(calc.multiply(2.5, 3.7)).toBeCloseTo(9.25);
+  });
 });
 
-describe('devide function', () => {
+describe('divide function', () => {
   test('divides two positive integers for integer result', () => {
     expect(calc.divide(8, 2)).toBe(4);
   });
@@ -55,7 +61,11 @@ describe('devide function', () => {
 
   test('divide by zero returns "Err"', () => {
     expect(calc.divide(5, 0)).toBe("Err");
-  })
+  });
+
+  test('divides floats for float result', () => {
+    expect(calc.divide(4.6, 1.6)).toBeCloseTo(2.875);
+  });
 });
 
 describe('operate function', () => {
