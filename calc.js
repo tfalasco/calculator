@@ -100,12 +100,13 @@ function registerOperation(op) {
     }
 }
 
-function assignEventListenersToButtons() {// Assign event listeners to the buttons
+function assignEventListenersToButtons() {
     // Here we are taking advantage of event bubbling to reduce the number of
     // event listeners, which should improve performance.
     const buttons = document.querySelector("#buttons");
     buttons.addEventListener("click", function(e) {
-        // When the buttons div gets a click event, check which target was clicked
+        // When the buttons div gets a click event, check which target was 
+        // clicked
         switch (e.target.id) {
             case "one":     // Intentional fall-through
             case "two":     // Intentional fall-through
@@ -123,7 +124,8 @@ function assignEventListenersToButtons() {// Assign event listeners to the butto
                 }
                 else if ("-0" === display.textContent) {
                     // Drop the zero and append this number to the display
-                    display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+                    display.textContent = display.textContent.slice(0, 
+                        display.textContent.length - 1);
                     display.textContent += e.target.textContent;
                 }
                 else {
@@ -164,7 +166,8 @@ function assignEventListenersToButtons() {// Assign event listeners to the butto
                     display.textContent = "0";
                 }
                 else {
-                    display.textContent = display.textContent.slice(0, display.textContent.length - 1);
+                    display.textContent = display.textContent.slice(0, 
+                        display.textContent.length - 1);
                 }
                 break;
             case "clear":
