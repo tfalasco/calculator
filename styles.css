@@ -36,7 +36,7 @@
     text-align:right;
     font-family: 'calculator-font';
     font-size:38px;
-    background-color: rgb(120, 162, 120);
+    background-color: darkseagreen;
 }
 
 .button {
@@ -54,4 +54,8 @@
 
 .operation {
     background-color: coral;
+}
+
+#equals {
+    background-color:khaki;
 }
