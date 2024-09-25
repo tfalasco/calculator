@@ -9,9 +9,11 @@ const Operations = Object.freeze({
 });
 
 const CalcSteps = Object.freeze({
-    ENTER_FIRST_NUMBER: 0,
-    ENTER_SECOND_NUMBER: 1,
-    ANSWER: 2,
+    RESET: 0,
+    ENTERING_FIRST_OPERAND: 1,
+    WAITING_FOR_SECOND_OPERAND: 2,
+    ENTERING_SECOND_OPERAND: 3,
+    VIEWING_ANSWER: 4,
 });
 /*****************************************************************************/
 
@@ -22,7 +24,7 @@ const ERR = "Err";
 
 const display = document.querySelector("#display");
 
-let currentStep = CalcSteps.ENTER_FIRST_NUMBER;
+let currentStep = CalcSteps.ENTERING_FIRST_OPERAND;
 let operand1 = null;
 let operand2 = null;
 let operator = null;
@@ -66,7 +68,7 @@ function operate(op1, op2, operator) {
 
 function resetCalculator() {
     display.textContent = "0";
-    currentStep = CalcSteps.ENTER_FIRST_NUMBER;
+    currentStep = CalcSteps.RESET;
     operand1 = null;
     operand2 = null;
     operator = null;
@@ -76,27 +78,65 @@ function performCalculation() {
     operand2 = display.textContent;
     display.textContent = operate(operand1, operand2, operator);
     operand1 = (ERR === display.textContent) ? null : display.textContent;
-    currentStep = CalcSteps.ANSWER;
+    currentStep = CalcSteps.VIEWING_ANSWER;
 }
 
 function registerOperation(op) {
-    if (CalcSteps.ENTER_FIRST_NUMBER === currentStep) {
-        operand1 = display.textContent;
-        operator = op;
-        display.textContent = "0";
-        currentStep = CalcSteps.ENTER_SECOND_NUMBER;
+    switch (currentStep) {
+        case CalcSteps.RESET:
+            operand1 = "0";
+            operator = op;
+            currentStep = CalcSteps.WAITING_FOR_SECOND_OPERAND;
+            break;
+        case CalcSteps.ENTERING_FIRST_OPERAND:
+            operand1 = display.textContent;
+            operator = op;
+            currentStep = CalcSteps.WAITING_FOR_SECOND_OPERAND;
+            break;
+        case CalcSteps.WAITING_FOR_SECOND_OPERAND:
+            operator = op;
+            break;
+        case CalcSteps.ENTERING_SECOND_OPERAND:
+            performCalculation();
+            operand2 = null;
+            operator = op;
+            currentStep = CalcSteps.WAITING_FOR_SECOND_OPERAND;
+            break;
+        case CalcSteps.VIEWING_ANSWER:
+            operand1 = display.textContent;
+            operand2 = null;
+            operator = op;
+            currentStep = CalcSteps.WAITING_FOR_SECOND_OPERAND;
+            break;
+        default:
+            break;
     }
-    else if (CalcSteps.ENTER_SECOND_NUMBER === currentStep) {
-        performCalculation();
-        operand2 = null;
-        operator = op;
-    }
-    else if (CalcSteps.ANSWER === currentStep) {
-        operand1 = display.textContent;
-        operand2 = null;
-        operator = op;
-        display.textContent = "0";
-        currentStep = CalcSteps.ENTER_SECOND_NUMBER;
+}
+
+function enterNumber(num) {
+    switch (currentStep) {
+        case CalcSteps.RESET:
+            display.textContent = num;
+            currentStep = CalcSteps.ENTERING_FIRST_OPERAND;
+            break;
+        case CalcSteps.ENTERING_FIRST_OPERAND:
+            display.textContent += num;
+            break;
+        case CalcSteps.WAITING_FOR_SECOND_OPERAND:
+            display.textContent = num;
+            currentStep = CalcSteps.ENTERING_SECOND_OPERAND;
+            break;
+        case CalcSteps.ENTERING_SECOND_OPERAND:
+            display.textContent += num;
+            break;
+        case CalcSteps.VIEWING_ANSWER:
+            resetCalculator();
+            enterNumber(num);
+            break;
+        default:
+            console.log("Calculator is in invalid state.");
+            console.log(`Current CalcStep: ${currentStep}`);
+            break;
     }
 }
 
@@ -118,24 +158,11 @@ function assignEventListenersToButtons() {
             case "eight":   // Intentional fall-through
             case "nine":    // Intentional fall-through
             case "zero":
-                if ("0" === display.textContent) {
-                    // Replace the 0 if that's the only character
-                    display.textContent = e.target.textContent;
-                }
-                else if ("-0" === display.textContent) {
-                    // Drop the zero and append this number to the display
-                    display.textContent = display.textContent.slice(0, 
-                        display.textContent.length - 1);
-                    display.textContent += e.target.textContent;
-                }
-                else {
-                    // Otherwise, append this number to the display
-                    display.textContent += e.target.textContent;
-                }
+                enterNumber(e.target.textContent);
                 break;
             case "decimal":
                 if (!display.textContent.includes(".")) {
-                    display.textContent += e.target.textContent;
+                    display.textContent += ".";
                 }
                 break;
             case "plus-minus":
@@ -174,7 +201,7 @@ function assignEventListenersToButtons() {
                 resetCalculator();
                 break;
             case "clear-entry":
-                if (CalcSteps.ANSWER === currentStep) {
+                if (CalcSteps.VIEWING_ANSWER === currentStep) {
                     resetCalculator();
                 }
                 else {
@@ -188,6 +215,7 @@ function assignEventListenersToButtons() {
         }
     
         console.log("----------------------");
+        console.log(`clicked: ${e.target.textContent}`);
         console.log(`cal step: ${currentStep}`);
         console.log(`first num: ${operand1}`);
         console.log(`second num: ${operand2}`);
