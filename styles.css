@@ -7,6 +7,10 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: antiquewhite;
+}
+
 #frame {
     display: flex;
     flex-direction: column;
@@ -17,6 +21,19 @@
     padding: 0;
     justify-content: space-evenly;
     background-color: lightgray;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;    
+    margin: auto;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: column;
+    width: 205px;
+    justify-content: space-evenly;
 }
 
 .row {
@@ -41,10 +58,12 @@
 
 .button {
     height: 40px;
-    width: 40px;
+    width: 43px;
     border: solid black 2px;
     border-radius: 5px;
     font-size: large;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
 .number {
