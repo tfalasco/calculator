@@ -21,7 +21,8 @@ const CalcSteps = Object.freeze({
  * Global Variables
  *****************************************************************************/
 const ERR = "Err";
-
+const MAX_DISPLAY_CHARS = 9;
+const MAX_DISPLAY_CHARS_PLUS_NEG_SGN = MAX_DISPLAY_CHARS + 1;
 const display = document.querySelector("#display");
 
 let currentStep = CalcSteps.ENTERING_FIRST_OPERAND;
@@ -67,7 +68,7 @@ function operate(op1, op2, operator) {
 }
 
 function resetCalculator() {
-    display.textContent = "0";
+    replaceDisplayContents("0");
     currentStep = CalcSteps.RESET;
     operand1 = null;
     operand2 = null;
@@ -76,7 +77,7 @@ function resetCalculator() {
 
 function performCalculation() {
     operand2 = display.textContent;
-    display.textContent = operate(operand1, operand2, operator);
+    replaceDisplayContents(operate(operand1, operand2, operator));
     operand1 = (ERR === display.textContent) ? null : display.textContent;
     currentStep = CalcSteps.VIEWING_ANSWER;
 }
@@ -116,18 +117,18 @@ function registerOperation(op) {
 function enterNumber(num) {
     switch (currentStep) {
         case CalcSteps.RESET:
-            display.textContent = num;
+            replaceDisplayContents(num);
             currentStep = CalcSteps.ENTERING_FIRST_OPERAND;
             break;
         case CalcSteps.ENTERING_FIRST_OPERAND:
-            display.textContent += num;
+            addToDisplay(num);
             break;
         case CalcSteps.WAITING_FOR_SECOND_OPERAND:
-            display.textContent = num;
+            replaceDisplayContents(num);
             currentStep = CalcSteps.ENTERING_SECOND_OPERAND;
             break;
         case CalcSteps.ENTERING_SECOND_OPERAND:
-            display.textContent += num;
+            addToDisplay(num);
             break;
         case CalcSteps.VIEWING_ANSWER:
             resetCalculator();
@@ -137,6 +138,89 @@ function enterNumber(num) {
             console.log("Calculator is in invalid state.");
             console.log(`Current CalcStep: ${currentStep}`);
             break;
+    }
+}
+
+function toggleNegativeSign() {
+    // Don't do anything if there is an error
+    if (ERR === display.textContent) {
+        return;
+    }
+    // Otherwise, toggle the negative sign
+    else if ("-" === display.textContent.charAt(0)) {
+        display.textContent = display.textContent.substring(1);
+    }
+    else {
+        display.textContent = "-" + display.textContent;
+    }
+}
+
+function stringIsTooLong(str) {
+    // Ensure str is a string
+    str = String(str);
+
+    // Determine the maximum length
+    const maxLength =  ("-" === str.charAt(0)) ?
+                        MAX_DISPLAY_CHARS_PLUS_NEG_SGN :
+                        MAX_DISPLAY_CHARS;
+    
+    return (str.length > maxLength);
+}
+
+function truncate(str) {
+    // Ensure str is a string
+    str = String(str);
+
+    // Determine the maximum length
+    const maxLength =  ("-" === str.charAt(0)) ?
+                        MAX_DISPLAY_CHARS_PLUS_NEG_SGN :
+                        MAX_DISPLAY_CHARS;
+
+    // If the string is already short enough, just return it
+    if (str.length <= maxLength) {
+        return str;
+    }
+    // If the string doesn't contain a decimal point, we can't truncate it
+    else if (!str.includes(".")) {
+        return ERR;
+    }
+    // If there are too many digits to the left of the decimal point we can't
+    // truncate it
+    else if (str.indexOf(".") >= maxLength) {
+        return ERR;
+    }
+    // Now str is longer than maxLength, has a decimal point, and can be 
+    // truncated.
+    // Lop off the least significant digits to fit maxLength
+    else {
+        str = str.slice(0, maxLength);
+
+        // If the last character is a decimal point, lop that off too.
+        if ("." === str.charAt(maxLength - 1)) {
+            str = str.slice(0, maxLength - 1);
+        }
+
+        return str;
+    }
+}
+
+function addToDisplay(str) {
+    const tempStr = display.textContent + str;
+
+    if (stringIsTooLong(tempStr)) {
+        display.textContent = truncate(tempStr);
+    }
+    else {
+        display.textContent = tempStr;
+    }
+}
+
+function replaceDisplayContents(str) {
+    if (stringIsTooLong(str)) {
+        display.textContent = truncate(str);
+    }
+    else {
+        display.textContent = str;
     }
 }
 
@@ -162,16 +246,11 @@ function assignEventListenersToButtons() {
                 break;
             case "decimal":
                 if (!display.textContent.includes(".")) {
-                    display.textContent += ".";
+                    addToDisplay(".");
                 }
                 break;
             case "plus-minus":
-                if ("-" === display.textContent.charAt(0)) {
-                    display.textContent = display.textContent.substring(1);
-                }
-                else {
-                    display.textContent = "-" + display.textContent;
-                }
+                toggleNegativeSign();
                 break;
             case "add":
                 registerOperation("+");
@@ -190,11 +269,11 @@ function assignEventListenersToButtons() {
                 break;
             case "backspace":
                 if (1 === display.textContent.length) {
-                    display.textContent = "0";
+                    replaceDisplayContents("0");
                 }
                 else {
-                    display.textContent = display.textContent.slice(0, 
-                        display.textContent.length - 1);
+                    replaceDisplayContents(display.textContent.slice(0, 
+                        display.textContent.length - 1));
                 }
                 break;
             case "clear":
@@ -205,7 +284,7 @@ function assignEventListenersToButtons() {
                     resetCalculator();
                 }
                 else {
-                    display.textContent = 0;
+                    replaceDisplayContents(0);
                 }
                 break;
             default:
