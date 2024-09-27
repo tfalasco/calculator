@@ -24,6 +24,9 @@ const ERR = "Err";
 const MAX_DISPLAY_CHARS = 9;
 const MAX_DISPLAY_CHARS_PLUS_NEG_SGN = MAX_DISPLAY_CHARS + 1;
 const display = document.querySelector("#display");
+const NUM_BTN_COLOR = "cadetblue";
+const OP_BTN_COLOR = "coral";
+const EQUAL_BTN_COLOR = "khaki";
 
 let currentStep = CalcSteps.ENTERING_FIRST_OPERAND;
 let operand1 = null;
@@ -228,6 +231,15 @@ function assignEventListenersToButtons() {
     // Here we are taking advantage of event bubbling to reduce the number of
     // event listeners, which should improve performance.
     const buttons = document.querySelector("#buttons");
+
+    // Blink the buttons grey while they are being clicked
+    buttons.addEventListener("mousedown", function(e) {
+        if (e.target.id != "buttons") {
+            e.target.style.backgroundColor = "gray";
+        }
+    });
+
+    // Act on each button click, then return the button to its original color
     buttons.addEventListener("click", function(e) {
         // When the buttons div gets a click event, check which target was 
         // clicked
@@ -292,7 +304,18 @@ function assignEventListenersToButtons() {
                 console.log(e);
                 break;            
         }
-    
+
+        // Change the button colors back
+        if ((e.target.className).includes("number")) {
+            e.target.style.backgroundColor = NUM_BTN_COLOR;
+        }
+        else if ((e.target.className).includes("operation")) {
+            e.target.style.backgroundColor = OP_BTN_COLOR;
+        }
+        else if ((e.target.className).includes("equals")) {
+            e.target.style.backgroundColor = EQUAL_BTN_COLOR;
+        }
+        
         console.log("----------------------");
         console.log(`clicked: ${e.target.textContent}`);
         console.log(`cal step: ${currentStep}`);
