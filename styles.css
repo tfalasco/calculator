@@ -66,6 +66,11 @@ body {
     margin-bottom: 2px;
 }
 
+.button:active {
+    background-color: gray;
+    transform: scale(0.95);
+}
+
 .number {
     background-color: cadetblue;
     font-size: x-large;
@@ -77,4 +82,9 @@ body {
 
 #equals {
     background-color:khaki;
+}
+
+#equals:active {
+    background-color: gray;
+    transform: scale(0.95);
 }
