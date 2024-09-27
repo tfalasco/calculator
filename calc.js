@@ -227,7 +227,7 @@ function replaceDisplayContents(str) {
     }
 }
 
-function assignEventListenersToButtons() {
+function assignButtonEventListeners() {
     // Here we are taking advantage of event bubbling to reduce the number of
     // event listeners, which should improve performance.
     const buttons = document.querySelector("#buttons");
@@ -324,13 +324,72 @@ function assignEventListenersToButtons() {
         console.log(`operator: ${operator}`);
     });
 }
+
+function assignKeyboardEventListeners() {
+    document.addEventListener("keydown", function (e) {
+        console.log (e.key);
+        switch(e.key) {
+            case "1":     // Intentional fall-through
+            case "2":     // Intentional fall-through
+            case "3":     // Intentional fall-through
+            case "4":     // Intentional fall-through
+            case "5":     // Intentional fall-through
+            case "6":     // Intentional fall-through
+            case "7":     // Intentional fall-through
+            case "8":     // Intentional fall-through
+            case "9":     // Intentional fall-through
+            case "0":
+                enterNumber(e.key);
+                break;
+            case ".":
+                if (!display.textContent.includes(".")) {
+                    addToDisplay(".");
+                }
+                break;
+            case "Shift":
+                toggleNegativeSign();
+                break;
+            case "+":
+                registerOperation("+");
+                break;
+            case "-":
+                registerOperation("-");
+                break;
+            case "*":
+                registerOperation("*");
+                break;
+            case "/":
+                registerOperation("/");
+                break;
+            case "Enter": // Intentional fall-through
+            case "=":
+                performCalculation();
+                break;
+            case "Backspace":
+                if (1 === display.textContent.length) {
+                    replaceDisplayContents("0");
+                }
+                else {
+                    replaceDisplayContents(display.textContent.slice(0, 
+                        display.textContent.length - 1));
+                }
+                break;
+            case "Escape":
+                resetCalculator();
+                break;
+            default:
+                break;
+        }
+    });
+}
 /*****************************************************************************/
 
 /******************************************************************************
  * Main Script
  *****************************************************************************/
 resetCalculator();
-assignEventListenersToButtons();
+assignButtonEventListeners();
+assignKeyboardEventListeners();
 /*****************************************************************************/
 
 /******************************************************************************
